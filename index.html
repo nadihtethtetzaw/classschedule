@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class Schedule</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: radial-gradient(circle at top center, #0f0f3e 0%, #05010f 100%);
+      overflow-x: hidden;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+
+    .schedule {
+      z-index: 1;
+      text-align: center;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+      width: 100%;
+      max-width: 900px;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .attendance-link {
+      margin-bottom: 20px;
+      display: inline-block;
+      background-color: #00ffff;
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .attendance-link:hover {
+      background-color: #00cccc;
+    }
+
+    .days {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .day {
+      padding: 12px;
+      background: rgba(0, 20, 40, 0.85);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease, background 0.3s ease;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+      font-size: 1rem;
+    }
+
+    .day:hover {
+      background: rgba(0, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+
+    .class-box {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      background: rgba(0, 20, 40, 0.8);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      animation: dropFade 0.5s ease-in-out;
+      display: none;
+      font-size: 1rem;
+    }
+
+    @keyframes dropFade {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    #countdown {
+      font-size: 1rem;
+      color: #00ffff;
+      margin-top: 10px;
+    }
+
+    @media screen and (max-width: 600px) {
+      .schedule {
+        padding: 20px;
+      }
+      .days {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      }
+      .day {
+        padding: 10px;
+        font-size: 0.9rem;
+      }
+      .class-box {
+        font-size: 0.9rem;
+        padding: 15px;
+      }
+      .attendance-link {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars" id="stars"></div>
+
+  <div class="schedule">
+    <h2>🌌 CodeCollab's Classes Schedule</h2>
+    <a class="attendance-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdiuFts76Zj8Y3VwXvzBLXl9fnxcXeSdf-6UNdn9-gQtRliiA/viewform" target="_blank">📋 Submit Attendance</a>
+    <div class="days">
+      <div class="day" onclick="showClass('sun')">Sunday</div>
+      <div class="day" onclick="showClass('mon')">Monday</div>
+      <div class="day" onclick="showClass('tue')">Tuesday</div>
+      <div class="day" onclick="showClass('wed')">Wednesday</div>
+      <div class="day" onclick="showClass('thu')">Thursday</div>
+      <div class="day" onclick="showClass('fri')">Friday</div>
+      <div class="day" onclick="showClass('sat')">Saturday</div>
+    </div>
+
+    <div id="sun" class="class-box">No class today! Time to study and practice.</div>
+    <div id="mon" class="class-box"></div>
+    <div id="tue" class="class-box"></div>
+    <div id="wed" class="class-box">No class today! Time to study and practice.</div>
+    <div id="thu" class="class-box"></div>
+    <div id="fri" class="class-box">No class today! Utilize this time for revision.</div>
+    <div id="sat" class="class-box">No class today! Relax and prepare for next week.</div>
+  </div>
+
+  <script>
+    const countdownDate = new Date("May 12, 2025 00:00:00").getTime();
+    const upcomingMsg = "Coming Soon: Frontend Web Development Foundation Batch - 1 (2:00 - 3:00 PM) Starts on May 12!";
+
+    function showClass(dayId) {
+      document.querySelectorAll('.class-box').forEach(box => box.style.display = 'none');
+      const box = document.getElementById(dayId);
+      if (!box) return;
+
+      const isBeforeStart = new Date().getTime() < countdownDate;
+      let html = "";
+
+      if (dayId === "mon") {
+        html += `<p>WDF B1: 8:00 - 9:15 PM</p><p>CSS Inter B1: 9:45 - 11:00 PM</p>`;
+        if (isBeforeStart) {
+          html += `<p>${upcomingMsg}</p><div id="countdown"></div>`;
+        } else {
+          html += `<p>JS in Action B1: 8:00 - 9:30 PM</p>`;
+        }
+      } else if (dayId === "tue" || dayId === "thu") {
+        if (isBeforeStart) {
+          html += `<p>WDF B1: 8:00 - 9:15 PM</p><p>CSS Inter B1: 9:45 - 11:00 PM</p><p>${upcomingMsg}</p><div id="countdown"></div>`;
+        } else {
+          html += `<p>WDF B1: 8:00 - 9:15 PM</p><p>CSS Inter B1: 9:45 - 11:00 PM</p><p>JS in Action B1: 8:00 - 9:30 PM</p>`;
+        }
+      } else if (dayId === "sun") {
+        html = "No class today! Utilize this time for revision.";
+      } else if (dayId === "wed") {
+        html = `<p>WDF B1: 8:00 - 9:15 PM</p><p>CSS Inter B1: 9:45 - 11:00 PM</p><p>${upcomingMsg}</p><div id="countdown"></div>`;
+      } else if (dayId === "fri") {
+        html = "Js In Action, Small Apps Big Skill Course Batch-1 (9:45 - 11:00 PM)";
+      } else if (dayId === "sat") {
+        html = "No class today! Relax and prepare for next week.";
+      }
+
+      box.innerHTML = html;
+      box.style.display = 'block';
+    }
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = countdownDate - now;
+
+      if (distance <= 0) {
+        document.getElementById("countdown")?.remove();
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      const cd = document.getElementById("countdown");
+      if (cd) {
+        cd.innerHTML = `⏳ ${days}d ${hours}h ${minutes}m ${seconds}s left`;
+      }
+    }
+
+    setInterval(updateCountdown, 1000);
+
+    function generateStars(count) {
+      const container = document.getElementById('stars');
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+        container.appendChild(star);
+      }
+    }
+
+    generateStars(100);
+  </script>
+</body>
+</html>
